@@ -129,7 +129,34 @@ Then open [http://localhost:3000](http://localhost:3000).
 
 ## Deployment
 
+### Tencent Cloud (Recommended for mainland China)
+
+For stable mainland China access, the recommended path is:
+
+- Tencent Cloud Lighthouse
+- Ubuntu 22.04
+- Node.js 20
+- PM2
+- Nginx reverse proxy
+
+The repo already includes:
+
+- [`ecosystem.config.cjs`](./ecosystem.config.cjs)
+- [`deploy/nginx/devils-advocate.conf`](./deploy/nginx/devils-advocate.conf)
+- [`docs/DEPLOY_TENCENT.md`](./docs/DEPLOY_TENCENT.md)
+
+Quick path:
+
+1. Create a Tencent Cloud Lighthouse server
+2. Clone the repo onto the server
+3. Fill `.env.production`
+4. Run `npm install && npm run build`
+5. Start with `pm2 start ecosystem.config.cjs`
+6. Configure Nginx and HTTPS
+
 ### Vercel
+
+Vercel is still useful for preview deployments and overseas demos:
 
 1. Import the repo into Vercel
 2. Keep the framework preset as `Next.js`
@@ -150,6 +177,10 @@ Most model traffic currently runs from the client, but these are reserved for fu
 NEXT_PUBLIC_APP_URL=
 NEXT_PUBLIC_BRAND_NAME=Devil's Advocate
 NEXT_PUBLIC_DEFAULT_PROVIDER=deepseek
+NEXT_PUBLIC_ENABLE_HOSTED_DEEPSEEK=true
+DEEPSEEK_API_KEY=
+HOSTNAME=0.0.0.0
+PORT=3000
 ```
 
 ## How To Use It Well
