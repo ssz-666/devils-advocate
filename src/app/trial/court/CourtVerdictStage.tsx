@@ -11,8 +11,13 @@ import { JudgeRuling } from "@/components/verdict/court/JudgeRuling";
 import { QuestionSummary } from "@/components/verdict/QuestionSummary";
 import { ShareableCourtImage } from "@/components/verdict/court/ShareableCourtImage";
 import { FlawsAndPillars } from "@/components/verdict/FlawsAndPillars";
-import { downloadElementAsPng, type ShareImageVariant } from "@/lib/image/generateImage";
+import {
+  downloadElementAsPng,
+  generatePngFile,
+  type ShareImageVariant,
+} from "@/lib/image/generateImage";
 import { createChatCompletion } from "@/lib/llm/client";
+import { getPublicAppUrl } from "@/lib/share/appUrl";
 import {
   buildCourtCommentaryPrompt,
   buildDeepAnalysisPrompt,
@@ -298,17 +303,50 @@ export function CourtVerdictStage({ onRestart }: { onRestart: () => void }) {
   }
 
   async function handleShare() {
-    const text = `法庭宣判 · ${sentence?.rulingZh ?? "本庭已作裁示。"}`;
+    if (!portraitRef.current) {
+      return;
+    }
+
+    const shareUrl = getPublicAppUrl();
+    const text = `???? ? ${sentence?.rulingZh ?? "???????"}`;
+
+    try {
+      const file = await generatePngFile(
+        portraitRef.current,
+        "portrait",
+        `court-share-${Date.now()} .png`.replace(' .png', '.png'),
+      );
+      if (navigator.canShare?.({ files: [file] })) {
+        await navigator.share({
+          title: "??????",
+          text: `${text}
+${shareUrl}`,
+          url: shareUrl,
+          files: [file],
+        });
+        return;
+      }
+    } catch {
+      // fall through to plain share
+    }
+
     if (navigator.share) {
       try {
-        await navigator.share({ title: "法庭最终宣判", text, url: window.location.href });
+        await navigator.share({
+          title: "??????",
+          text: `${text}
+${shareUrl}`,
+          url: shareUrl,
+        });
         return;
       } catch {
         // fall through
       }
     }
-    await navigator.clipboard.writeText(`${text}\n${window.location.href}`);
-    setToast({ visible: true, message: "分享文案已复制" });
+
+    await navigator.clipboard.writeText(`${text}
+${shareUrl}`);
+    setToast({ visible: true, message: "?????????" });
   }
 
   return (

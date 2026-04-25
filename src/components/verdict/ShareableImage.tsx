@@ -1,6 +1,8 @@
 "use client";
 
+import { ShareQrCard } from "@/components/verdict/ShareQrCard";
 import type { ShareImageVariant } from "@/lib/image/generateImage";
+import { getPublicAppUrl } from "@/lib/share/appUrl";
 import { summarizeDecisionQuestion } from "@/lib/verdict/questionSummary";
 import { VERDICT_TEMPLATES } from "@/lib/verdict/templates";
 import type { DebateSession } from "@/lib/store/debate";
@@ -54,6 +56,7 @@ export function ShareableImage({ session, variant }: ShareableImageProps) {
     verdict.sentenceZh ||
     "真正的决定，经得住最锋利的反对。";
   const questionSummary = summarizeDecisionQuestion(session.statement);
+  const publicAppUrl = getPublicAppUrl();
 
   return (
     <div
@@ -181,12 +184,20 @@ export function ShareableImage({ session, variant }: ShareableImageProps) {
           </div>
         </section>
 
-        <section className="mt-auto flex items-center justify-between pt-12">
+        <section className="mt-auto grid grid-cols-[1fr_auto] items-end gap-8 pt-12">
           <div>
             <div className="mb-5 h-px w-72 bg-gradient-to-r from-devil-gold to-transparent" />
-            <p className="font-serif-cn text-[28px] text-devil-ivory">反方辩友 · devils-advocate.app</p>
+            <p className="font-serif-cn text-[28px] text-devil-ivory">
+              反方辩友 · devils-advocate.app
+            </p>
             <p className="mt-3 font-body-cn text-[20px] text-devil-muted">
               Your worst critic, for your best decisions
+            </p>
+            <p className="mt-4 font-mono text-[0.68rem] tracking-[0.18em] text-devil-gold">
+              VISIT THE COURT
+            </p>
+            <p className="mt-2 break-all font-mono text-[0.72rem] text-devil-muted">
+              {publicAppUrl}
             </p>
           </div>
           <div className="flex items-center gap-8">
@@ -198,15 +209,7 @@ export function ShareableImage({ session, variant }: ShareableImageProps) {
                 {verdict.advocateRemark || template.closingZh}
               </p>
             </div>
-            <div className="grid size-40 place-items-center border border-devil-line bg-devil-bg-soft">
-              <svg className="size-28 text-devil-gold/70" fill="none" viewBox="0 0 120 120">
-                <rect height="92" stroke="currentColor" width="92" x="14" y="14" />
-                <path
-                  d="M34 34h12v12H34zm20 0h12v12H54zm20 0h12v12H74zM34 54h12v12H34zm40 0h12v12H74zM34 74h12v12H34zm20 0h12v12H54zm20 0h12v12H74z"
-                  stroke="currentColor"
-                />
-              </svg>
-            </div>
+            <ShareQrCard url={publicAppUrl} />
           </div>
         </section>
       </div>

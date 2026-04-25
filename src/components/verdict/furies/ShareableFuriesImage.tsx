@@ -1,7 +1,9 @@
 "use client";
 
+import { ShareQrCard } from "@/components/verdict/ShareQrCard";
 import { FURY_PERSONAS } from "@/lib/llm/prompts";
 import type { ShareImageVariant } from "@/lib/image/generateImage";
+import { getPublicAppUrl } from "@/lib/share/appUrl";
 import { summarizeDecisionQuestion } from "@/lib/verdict/questionSummary";
 
 type ShareableFuriesImageProps = {
@@ -44,6 +46,7 @@ export function ShareableFuriesImage({
   solidPillars = [],
 }: ShareableFuriesImageProps) {
   const questionSummary = summarizeDecisionQuestion(statement);
+  const publicAppUrl = getPublicAppUrl();
 
   return (
     <div
@@ -173,6 +176,25 @@ export function ShareableFuriesImage({
             </div>
           </section>
         ) : null}
+
+        <section className="mt-auto grid grid-cols-[1fr_auto] items-end gap-8 pt-12">
+          <div>
+            <div className="mb-5 h-px w-72 bg-gradient-to-r from-devil-gold to-transparent" />
+            <p className="font-serif-cn text-[28px] text-devil-ivory">
+              反方辩友 · devils-advocate.app
+            </p>
+            <p className="mt-3 font-body-cn text-[20px] text-devil-muted">
+              Five voices. One report. No easy exits.
+            </p>
+            <p className="mt-4 font-mono text-[0.68rem] tracking-[0.18em] text-devil-gold">
+              RETURN TO THE JURY
+            </p>
+            <p className="mt-2 break-all font-mono text-[0.72rem] text-devil-muted">
+              {publicAppUrl}
+            </p>
+          </div>
+          <ShareQrCard url={publicAppUrl} />
+        </section>
       </div>
     </div>
   );

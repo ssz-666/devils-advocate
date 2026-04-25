@@ -13,8 +13,13 @@ import { ShareableImage } from "@/components/verdict/ShareableImage";
 import { VerdictSkeleton } from "@/components/verdict/VerdictSkeleton";
 import { VerdictTemplate } from "@/components/verdict/VerdictTemplate";
 import { VerdictTypeLabel } from "@/components/verdict/VerdictTypeLabel";
-import { downloadElementAsPng, type ShareImageVariant } from "@/lib/image/generateImage";
+import {
+  downloadElementAsPng,
+  generatePngFile,
+  type ShareImageVariant,
+} from "@/lib/image/generateImage";
 import { createChatCompletion } from "@/lib/llm/client";
+import { getPublicAppUrl } from "@/lib/share/appUrl";
 import {
   buildDeepAnalysisPrompt,
   buildQuickJudgmentPrompt,
@@ -557,18 +562,40 @@ export function VerdictPageClient() {
   }
 
   async function handleShare() {
-    if (!renderSession?.verdict) {
+    if (!renderSession?.verdict || !portraitRef.current) {
       return;
     }
 
-    const summary = `${renderSession.verdict.oneLiner || renderSession.verdict.sentenceZh} · 成立度 ${renderSession.verdict.convictionScore}`;
+    const shareUrl = getPublicAppUrl();
+    const summary = `${renderSession.verdict.oneLiner || renderSession.verdict.sentenceZh} ? ??? ${renderSession.verdict.convictionScore}`;
+
+    try {
+      const file = await generatePngFile(
+        portraitRef.current,
+        "portrait",
+        `verdict-share-${Date.now()} .png`.replace(' .png', '.png'),
+      );
+      if (navigator.canShare?.({ files: [file] })) {
+        await navigator.share({
+          title: "???????",
+          text: `${summary}
+${shareUrl}`,
+          url: shareUrl,
+          files: [file],
+        });
+        return;
+      }
+    } catch {
+      // fall through to plain share
+    }
 
     if (navigator.share) {
       try {
         await navigator.share({
-          title: "反方辩友判决书",
-          text: summary,
-          url: window.location.href,
+          title: "???????",
+          text: `${summary}
+${shareUrl}`,
+          url: shareUrl,
         });
         return;
       } catch {
@@ -576,8 +603,9 @@ export function VerdictPageClient() {
       }
     }
 
-    await navigator.clipboard.writeText(`${summary}\n${window.location.href}`);
-    setToast({ visible: true, message: "链接与判词已复制" });
+    await navigator.clipboard.writeText(`${summary}
+${shareUrl}`);
+    setToast({ visible: true, message: "?????????" });
   }
 
   return (

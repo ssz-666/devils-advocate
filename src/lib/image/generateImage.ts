@@ -52,3 +52,20 @@ export async function downloadElementAsPng(
   anchor.download = filename;
   anchor.click();
 }
+
+export async function generatePngFile(
+  element: HTMLElement,
+  variant: ShareImageVariant,
+  filename = `verdict-${Date.now()}.png`,
+) {
+  const canvas = await generateImage(element, variant);
+  const blob = await new Promise<Blob | null>((resolve) => {
+    canvas.toBlob((nextBlob) => resolve(nextBlob), "image/png");
+  });
+
+  if (!blob) {
+    throw new Error("生成分享图片失败。");
+  }
+
+  return new File([blob], filename, { type: "image/png" });
+}
