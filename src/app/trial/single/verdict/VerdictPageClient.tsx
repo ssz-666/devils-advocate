@@ -132,6 +132,7 @@ export function VerdictPageClient() {
   const apiKey = useSettingsStore((state) => state.apiKey);
   const baseUrl = useSettingsStore((state) => state.baseUrl);
   const model = useSettingsStore((state) => state.model);
+  const hasApiKey = useSettingsStore((state) => state.hasApiKey);
 
   const [session, setSession] = useState<DebateSession | null>(null);
   const [toast, setToast] = useState<ToastState>({ visible: false, message: "" });
@@ -155,7 +156,7 @@ export function VerdictPageClient() {
   const landscapeRef = useRef<HTMLDivElement>(null);
   const generationKeyRef = useRef("");
 
-  const isConfigured = apiKey.trim().length > 0;
+  const isConfigured = hasApiKey();
 
   useEffect(() => {
     hydrateSettings();

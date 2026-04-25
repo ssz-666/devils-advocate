@@ -1,6 +1,7 @@
 "use client";
 
 import { create } from "zustand";
+import { canUseHostedProvider } from "@/lib/llm/hosted";
 
 export type LlmProvider =
   | "deepseek"
@@ -236,6 +237,9 @@ export const useSettingsStore = create<SettingsState>((set, get) => ({
     set({ onboardingSeen });
     get().save();
   },
-  hasApiKey: () => get().apiKey.trim().length > 0,
+  hasApiKey: () => {
+    const state = get();
+    return state.apiKey.trim().length > 0 || canUseHostedProvider(state.provider, state.apiKey);
+  },
   save: () => writeStoredSettings(get()),
 }));

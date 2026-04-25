@@ -116,7 +116,8 @@ export function DebateStage() {
   const baseUrl = useSettingsStore((state) => state.baseUrl);
   const model = useSettingsStore((state) => state.model);
   const soundEnabled = useSettingsStore((state) => state.soundEnabled);
-  const isConfigured = apiKey.trim().length > 0;
+  const hasApiKey = useSettingsStore((state) => state.hasApiKey);
+  const isConfigured = hasApiKey();
 
   const canSend = useMemo(
     () => input.trim().length > 0 && !isStreaming && isConfigured,

@@ -1,4 +1,5 @@
 import type { LlmProvider } from "@/lib/store/settings";
+import { canUseHostedProvider } from "@/lib/llm/hosted";
 
 export type ChatRole = "system" | "user" | "assistant";
 
@@ -281,6 +282,60 @@ async function createOpenAiCompatibleCompletion(input: ChatCompletionInput) {
   }
 }
 
+async function createHostedDeepSeekCompletion(input: ChatCompletionInput) {
+  const { signal, cleanup } = withTimeout(input.signal, input.timeoutMs);
+  const actualModel = resolveModel(input);
+
+  console.log(`[Verdict ${input.requestTag ?? "?"}] sent at`, Date.now());
+  console.log(
+    `[Verdict ${input.requestTag ?? "?"}] model`,
+    actualModel,
+    "stream",
+    input.stream ?? false,
+    "(hosted proxy)",
+  );
+
+  const response = await fetch("/api/llm/chat", {
+    method: "POST",
+    signal,
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      provider: input.provider,
+      model: actualModel,
+      messages: input.messages,
+      stream: input.stream ?? false,
+      temperature: input.temperature ?? 0.7,
+      maxTokens: input.maxTokens,
+    }),
+  });
+
+  try {
+    if (!response.ok) {
+      const detail = await response.text();
+      throw new HttpStatusError(response.status, detail || `请求失败：${response.status}`);
+    }
+
+    if (input.stream) {
+      const streamed = await readSseStream(
+        response,
+        parseOpenAiCompatibleLine,
+        input.requestTag,
+        input.onToken,
+      );
+      return { content: streamed.content };
+    }
+
+    const data = (await response.json()) as {
+      choices?: Array<{ message?: { content?: string } }>;
+    };
+    return { content: data.choices?.[0]?.message?.content ?? "" };
+  } finally {
+    cleanup();
+  }
+}
+
 async function createClaudeCompletion(input: ChatCompletionInput) {
   const { signal, cleanup } = withTimeout(input.signal, input.timeoutMs);
   const actualModel = resolveModel(input);
@@ -363,6 +418,10 @@ function logRequestTiming(input: ChatCompletionInput, startedAt: number, status:
 }
 
 async function executeCompletion(input: ChatCompletionInput) {
+  if (canUseHostedProvider(input.provider, input.apiKey)) {
+    return createHostedDeepSeekCompletion(input);
+  }
+
   if (input.provider === "claude") {
     return createClaudeCompletion(input);
   }
@@ -373,7 +432,7 @@ async function executeCompletion(input: ChatCompletionInput) {
 export async function createChatCompletion(
   input: ChatCompletionInput,
 ): Promise<ChatCompletionResult> {
-  if (!input.apiKey.trim()) {
+  if (!input.apiKey.trim() && !canUseHostedProvider(input.provider, input.apiKey)) {
     throw new Error("请先配置 API Key。");
   }
 

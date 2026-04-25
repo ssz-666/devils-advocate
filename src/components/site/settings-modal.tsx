@@ -3,6 +3,7 @@
 import { X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { createChatCompletion } from "@/lib/llm/client";
+import { isHostedDeepSeekEnabled } from "@/lib/llm/hosted";
 import {
   type LlmProvider,
   PROVIDER_CONFIGS,
@@ -29,6 +30,7 @@ export function SettingsModal() {
   const soundEnabled = useSettingsStore((state) => state.soundEnabled);
   const [testStatus, setTestStatus] = useState("");
   const [isTesting, setIsTesting] = useState(false);
+  const hostedDeepSeekEnabled = isHostedDeepSeekEnabled();
 
   useEffect(() => {
     hydrate();
@@ -113,7 +115,7 @@ export function SettingsModal() {
               <input
                 className="mt-3 w-full border border-devil-line bg-devil-bg px-4 py-3 font-mono text-sm text-devil-ivory outline-none transition-colors focus:border-devil-gold"
                 onChange={(event) => setApiKey(event.target.value)}
-                placeholder="sk-..."
+                placeholder={provider === "deepseek" && hostedDeepSeekEnabled ? "可留空，使用平台默认 DeepSeek" : "sk-..."}
                 type="password"
                 value={apiKey}
               />
@@ -157,6 +159,11 @@ export function SettingsModal() {
               <div className="border border-devil-line bg-devil-bg/60 p-4 font-body-cn text-sm leading-7 text-devil-muted">
                 隐私声明：API Key 仅保存在你的浏览器 localStorage 中，并做简单异或混淆。当前阶段所有请求都由前端直连模型服务商，不经过项目后端代理。
               </div>
+              {hostedDeepSeekEnabled ? (
+                <div className="border border-devil-red/30 bg-devil-bg/60 p-4 font-body-cn text-sm leading-7 text-devil-ivory/78">
+                  默认体验说明：DeepSeek 已启用平台托管模式。用户不填 Key 也可直接使用默认模型；真正的 DeepSeek API Key 仅保存在服务器环境变量中，不会下发到浏览器。
+                </div>
+              ) : null}
               <div className="border border-devil-gold/30 bg-devil-bg/60 p-4 font-body-cn text-sm leading-7 text-devil-muted">
                 判决阶段会自动使用快速模型以保证响应速度。你在这里选择的慢模型仍可用于辩论主过程，但判决页会强制切换到对应服务商的快模型。
               </div>
