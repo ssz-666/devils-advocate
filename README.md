@@ -1,49 +1,111 @@
-# Devil's Advocate · 反方辩友
+# Devil's Advocate | 反方辩友
 
-![Hero Banner](./public/og-brand.svg)
+![Devil's Advocate Hero](./public/og-brand.svg)
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-B8860B.svg)](./LICENSE)
-![Stars](https://img.shields.io/github/stars/your-name/devils-advocate?color=8B0000)
-![Deploy](https://img.shields.io/badge/Deploy-Vercel-0A0A0B)
+![GitHub Stars](https://img.shields.io/github/stars/ssz-666/devils-advocate?color=8B0000)
+![Next.js](https://img.shields.io/badge/Next.js-14-0A0A0B)
+![Vercel Ready](https://img.shields.io/badge/Deploy-Vercel-111111)
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new)
 
 **Your worst critic, for your best decisions.**
 
-反方辩友不是一个温柔的聊天框。  
-它更像一间灯光压低的审讯室：你把决定放上桌，AI 负责把它从热情、恐惧、虚荣、责任、代价和后果的角度一层层拆开。  
-如果一个决定经得起最坏的提问，它才配得上真正发生。
+Devil's Advocate is an AI-native decision courtroom.
+You bring a decision. The product brings resistance: doubt, consequence, responsibility, regret, evidence, and the uncomfortable questions most people avoid asking.
+
+It is not designed to comfort you quickly.
+It is designed to pressure-test whether a decision deserves to survive contact with reality.
+
+## Product Idea
+
+Most decision tools help users clarify what they want.
+This one helps users discover whether what they want can withstand opposition.
+
+The product wraps LLM reasoning in theatrical, structured interfaces:
+
+- **Single Blade** for direct one-on-one cross-examination
+- **Five Furies** for a five-personality jury assault
+- **The Courtroom** for a fully staged judicial proceeding
 
 ## Features
 
-| Feature | What it does |
+| Feature | Description |
 | --- | --- |
-| Single Blade | 一对一反方辩论，快速进入最核心的逻辑交锋 |
-| Five Furies | 五个不同人格轮番质询，形成陪审团合议 |
-| The Courtroom | 法官、控方、辩方与用户四方同场的正式审判 |
-| Verdict Engine | 骨架预制 + 本地金句库 + LLM 填空，兼顾速度与质感 |
-| Shareable Verdict | 生成可下载的竖版 / 方版 / 横版长图 |
-| History Archive | IndexedDB 本地卷宗库，支持搜索、筛选、导出和删除 |
-| Settings & Data Control | 模型配置、音效、导入导出、清空历史 |
+| Single Blade | One AI opponent challenges the user's decision in multiple rounds. |
+| Five Furies | Five distinct personas attack the same decision from five different emotional and logical angles. |
+| The Courtroom | Judge, prosecution, defense, and user conduct a stylized courtroom exchange. |
+| Hybrid Verdict Engine | Static layout + local content libraries + fast-model LLM refinement for much faster verdict generation. |
+| Shareable Verdict Images | Export polished portrait, square, and landscape verdict images for social sharing. |
+| History Archive | Local IndexedDB archive with search, filter, replay, export, and delete. |
+| Settings & Data Control | API configuration, sound toggles, onboarding, import/export, and local data management. |
 
 ## Modes
 
 ### 1. Single Blade
 ![Single Blade Placeholder](./public/verdict-card-placeholder.svg)
 
-最纯粹的一对一辩论。  
-你只面对一个冷静且不讨好的“魔鬼代言人”。
+The cleanest form of opposition.
+One merciless advocate challenges your logic until your decision either sharpens or collapses.
 
 ### 2. Five Furies
 ![Five Furies Placeholder](./public/share-image-placeholder.svg)
 
-五种人格围成一圈，同时从责任、未来、感情、幻想与恶意出手。  
-最后生成一份“陪审团合议报告”。
+Five personas rotate through the same decision:
+responsibility, hindsight, intimacy, idealism, and malice.
+The result becomes a jury-style deliberation report.
 
 ### 3. The Courtroom
 ![Courtroom Placeholder](./public/hero-screenshot-placeholder.svg)
 
-最正式、最戏剧化的一种模式。  
-法官主持、控方进攻、辩方辩护、用户答辩，最后当庭宣判。
+The most theatrical mode.
+A judge presides, prosecution attacks, defense responds, and the user is forced to answer in procedural form.
+
+## Architecture
+
+All three modes now share the same verdict-generation philosophy:
+
+```text
+statement + dialogue
+-> local compression
+-> fast quick-judgment request
+-> local templates / libraries assemble the main verdict instantly
+-> optional LLM enhancement blocks stream or fade in later
+-> html2canvas export for shareable images
+```
+
+### Shared modules
+
+- `src/lib/verdict/compress.ts`
+- `src/lib/verdict/classifier.ts`
+- `src/lib/llm/client.ts`
+- `src/components/verdict/FlawsAndPillars.tsx`
+- `src/lib/verdict/questionSummary.ts`
+
+### Mode-specific assets
+
+- **Single Blade**: quote library + verdict templates
+- **Five Furies**: jury remarks + local role scoring + furies template
+- **Courtroom**: judicial sentence templates + court scoring breakdown
+
+## Prompt Engineering Notes
+
+The core design principle is not “make the model say more.”
+It is “make the model say only the part that truly matters.”
+
+Three prompt-engineering choices shape the product:
+
+1. **Role-constrained prompting**
+   Each mode uses tightly framed voices instead of a generic assistant tone.
+
+2. **Generation load shedding**
+   The UI, ritual language, scoring structure, and fallback copy are prepared locally first.
+   The model fills only the last, highest-value gap.
+
+3. **Progressive enhancement**
+   A usable verdict appears quickly, while richer analysis arrives independently.
+   This preserves drama without forcing the user to wait on a single giant JSON response.
+
+That trade-off sacrifices some open-ended generation in exchange for far better speed, controllability, and UX reliability.
 
 ## Tech Stack
 
@@ -52,7 +114,7 @@
 - Tailwind CSS
 - Framer Motion
 - Zustand
-- IndexedDB (`idb`)
+- IndexedDB via `idb`
 - html2canvas
 - Vercel
 
@@ -63,71 +125,70 @@ npm install
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000).
+Then open [http://localhost:3000](http://localhost:3000).
 
 ## Deployment
 
 ### Vercel
 
-1. Import the repo into Vercel.
-2. Keep framework preset as `Next.js`.
-3. Add optional variables from `.env.example`.
-4. Deploy.
+1. Import the repo into Vercel
+2. Keep the framework preset as `Next.js`
+3. Add optional variables from `.env.example`
+4. Deploy
 
-### Domain Suggestion
+### Suggested domains
 
 - `devilsadvocate.app`
 - `devils-advocate.app`
 - `fanfangbianyou.com`
 
-## Prompt Engineering Notes
+## Environment Variables
 
-这个项目的核心不是“让模型多说”，而是“让模型只说用户真正会在意的那一部分”。
+Most model traffic currently runs from the client, but these are reserved for future server-side routing and branding:
 
-我们在设计里做了三层控制：
-
-1. **角色化约束**
-   - 每个模式都有稳定人设，而不是泛用助手口吻。
-   - 不同人格只从自己的立场发言，避免多角色最后都说成同一个人。
-
-2. **判决减载**
-   - 判决页不再要求模型一次吐完整大 JSON。
-   - 先由前端预制版式和套话，再用本地金句候选 + LLM 微调。
-   - 这牺牲了一部分生成自由度，换来可感知的速度和稳定性。
-
-3. **本地预处理**
-   - 对话历史先在前端压缩。
-   - 分类器、本地金句库、模板库都先行工作，尽量让模型做“判断”和“修辞最后一击”，而不是做所有脏活。
+```bash
+NEXT_PUBLIC_APP_URL=
+NEXT_PUBLIC_BRAND_NAME=Devil's Advocate
+NEXT_PUBLIC_DEFAULT_PROVIDER=deepseek
+```
 
 ## How To Use It Well
 
-- 不要只写结论，要写条件、代价和你现在手上的筹码。
-- 如果你想被真正说服，就别把最关键的事实藏起来。
-- 单刀适合快速拷问；围攻适合多维拆解；法庭适合把整个决定搬上正式程序。
+- Describe the decision, not just the conclusion.
+- Include constraints, costs, trade-offs, and what you already know.
+- If you hide the hardest fact, the verdict becomes less useful.
+- Use Single Blade for clarity, Five Furies for perspective spread, and The Courtroom for formal pressure testing.
 
 ## Roadmap
 
-- [ ] 多语言支持
-- [ ] 服务端代理与团队账号系统
-- [ ] 更精细的角色记忆
-- [ ] 真实分享链接与二维码落地页
-- [ ] 生成式视觉资源替换 SVG 占位
+- [ ] Real OG screenshots to replace placeholders
+- [ ] Multi-language support
+- [ ] Server-side proxy and account system
+- [ ] Team / collaborative decision rooms
+- [ ] Stronger persona memory
+- [ ] QR-enabled social landing pages
+- [ ] More export themes and animated verdict cards
 
 ## Contributing
 
-欢迎 PR、Issue、Prompt 改进建议和视觉提案。
+Contributions are welcome.
 
-建议贡献方式：
+Suggested flow:
 
-1. Fork 仓库
-2. 创建功能分支
-3. 提交清晰的 commit message
-4. 发起 PR，并说明模式、交互或 prompt 的改动理由
+1. Fork the repo
+2. Create a feature branch
+3. Keep commit messages clear and intentional
+4. Open a PR with screenshots or a short demo when UI changes are involved
 
-## Inspiration & Thanks
+## Inspiration
 
-- 法庭戏剧、古典修辞学、哲学辩难传统
-- 所有曾经在做决定前，认真问过自己“如果我错了怎么办”的人
+- Courtroom films and legal drama staging
+- Classical rhetoric and adversarial questioning
+- The feeling of asking yourself, honestly: “What if I am wrong?”
+
+## Assets
+
+See [docs/ASSETS.md](./docs/ASSETS.md) for the visual asset checklist, sizes, prompts, and placement paths.
 
 ## License
 
