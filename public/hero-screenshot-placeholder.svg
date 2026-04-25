@@ -1,0 +1,14 @@
+<svg width="1440" height="900" viewBox="0 0 1440 900" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1440" height="900" fill="#0A0A0B"/>
+  <circle cx="275" cy="170" r="360" fill="#8B0000" opacity="0.16"/>
+  <circle cx="1130" cy="700" r="280" fill="#B8860B" opacity="0.05"/>
+  <path d="M958 80C1030 220 930 320 960 455C990 592 1134 640 1078 776C1024 907 812 875 762 748C726 657 805 597 762 492C721 391 598 304 654 184C704 78 878 120 958 80Z" fill="#8B0000" opacity="0.13"/>
+  <text x="720" y="190" fill="#8A8780" font-family="monospace" font-size="15" letter-spacing="8" text-anchor="middle">EST. 2026 · COGNITIVE CLARITY INSTRUMENT</text>
+  <text x="720" y="390" fill="#E8E6E3" font-family="Georgia, serif" font-size="112" text-anchor="middle">Every decision deserves</text>
+  <text x="720" y="510" fill="#8B0000" font-family="Georgia, serif" font-size="112" text-anchor="middle">its worst enemy.</text>
+  <text x="720" y="585" fill="#E8E6E3" opacity="0.82" font-family="serif" font-size="30" text-anchor="middle">让最锋利的反对声，替你做决定前的最后一道审视</text>
+  <rect x="577" y="675" width="286" height="64" fill="none" stroke="#B8860B" opacity="0.45"/>
+  <line x1="577" y1="666" x2="863" y2="666" stroke="#B8860B" opacity="0.45"/>
+  <line x1="577" y1="748" x2="863" y2="748" stroke="#B8860B" opacity="0.45"/>
+  <text x="720" y="714" fill="#E8E6E3" font-family="monospace" font-size="13" letter-spacing="4" text-anchor="middle">ENTER THE COURTROOM</text>
+</svg>

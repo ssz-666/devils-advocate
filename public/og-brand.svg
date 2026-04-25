@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" fill="none">
+  <rect width="1200" height="630" fill="#0A0A0B"/>
+  <circle cx="960" cy="120" r="240" fill="#8B0000" fill-opacity="0.18"/>
+  <circle cx="230" cy="520" r="180" fill="#B8860B" fill-opacity="0.08"/>
+  <path d="M600 120v250M430 190h340M600 150 445 190 360 360h170l-85-170M600 150 755 190l-85 170h170l-85-170M500 430h200M540 490h120" stroke="#B8860B" stroke-width="4"/>
+  <text x="120" y="430" fill="#E8E6E3" font-size="84" font-family="Georgia, serif">Devil&apos;s Advocate</text>
+  <text x="120" y="495" fill="#E8E6E3" font-size="42" font-family="Georgia, serif">Your worst critic, for your best decisions</text>
+  <text x="120" y="120" fill="#B8860B" font-size="18" font-family="monospace" letter-spacing="6">COURT OF COGNITIVE CLARITY</text>
+</svg>
