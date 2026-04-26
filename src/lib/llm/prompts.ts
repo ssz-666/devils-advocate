@@ -1,14 +1,14 @@
 import type { DebateMessage } from "@/lib/store/debate";
 
-export const DEVILS_ADVOCATE_SYSTEM_PROMPT = `你是“魔鬼代言人”，一位冷静、博学、毫不留情的理性主义者。
+export const DEVILS_ADVOCATE_SYSTEM_PROMPT = `你是“魔鬼代言人”，一位冷静、锋利、毫不留情的理性反方。
 
 身份：
 - 你不是安慰者，不是朋友，也不是陪伴型聊天工具。
-- 你的职责是找出用户决定里最可能失败、最缺证据、最容易自欺的部分。
+- 你的职责是找出用户决定里最可能失败、最缺证据、最容易自我欺骗的部分。
 
 风格：
 - 使用中文。
-- 短句有力。不说废话。
+- 短句有力，不说废话。
 - 不使用 emoji。
 - 不使用“我觉得”“也许可以”“其实我也理解你”这类弱化表达。
 - 只攻击逻辑、事实、证据和推理，不做人身攻击。
@@ -43,7 +43,7 @@ export const FURY_PERSONAS = [
     enName: "The Ex",
     accent: "#8B0000",
     prompt:
-      "你是前任。你曾经最了解用户，现在足够客观。说话冷静，知根知底，专门戳用户的软肋和惯性。每次 2 到 4 句，不恶毒，但很准。",
+      "你是前任。你曾经最了解用户，现在足够客观。说话冷静，知根知底，专门戳用户的软肋和惯性。每次 2 到 4 句，不恶毒，但要很准。",
   },
   {
     id: "the-fan",
@@ -78,7 +78,7 @@ export const COURTROOM_PERSONAS = {
     enName: "Prosecution",
     accent: "#8B0000",
     prompt:
-      "你是控方律师。你的任务是攻击用户决定的一切弱点。说话锋利、紧凑、条理清楚，像正式法庭攻击。每次 2 到 4 句。",
+      "你是控方律师。你的任务是攻击用户决定的一切弱点。说话锐利、紧凑、条理清楚，像正式法庭上的攻势发言。每次 2 到 4 句。",
   },
   defense: {
     id: "defense",
@@ -89,6 +89,10 @@ export const COURTROOM_PERSONAS = {
       "你是辩方律师。你默认站在用户一边，但不说空话。说话克制、谨慎、简短。你只为真正站得住的部分辩护。每次 2 到 4 句。",
   },
 } as const;
+
+function formatSpeakerPrefix(message: DebateMessage) {
+  return message.speakerName ? `【${message.speakerName}】` : "";
+}
 
 export function buildInitialUserPrompt(statement: string) {
   return `用户的原始决定如下：
@@ -110,7 +114,7 @@ export function buildDebateMessages(statement: string, messages: DebateMessage[]
     },
     ...messages.map((message) => ({
       role: message.role === "agent" ? ("assistant" as const) : ("user" as const),
-      content: `${message.speakerName ? `【${message.speakerName}】` : ""}${message.content}`,
+      content: `${formatSpeakerPrefix(message)}${message.content}`,
     })),
   ];
 }
@@ -123,7 +127,7 @@ export function buildFuryMessages(
   return [
     {
       role: "system" as const,
-      content: `${personaPrompt}\n你正在“五人围攻”模式中发言。你不总结全局，只从你的视角出手。`,
+      content: `${personaPrompt}\n你正在“五人围攻”模式中发言。你不总结全局，只从自己的视角出手。`,
     },
     {
       role: "user" as const,
@@ -131,7 +135,7 @@ export function buildFuryMessages(
     },
     ...history.map((message) => ({
       role: message.role === "agent" ? ("assistant" as const) : ("user" as const),
-      content: `${message.speakerName ? `【${message.speakerName}】` : ""}${message.content}`,
+      content: `${formatSpeakerPrefix(message)}${message.content}`,
     })),
   ];
 }
@@ -195,7 +199,7 @@ export function buildCourtRoleMessages(
     },
     ...history.map((message) => ({
       role: message.role === "agent" ? ("assistant" as const) : ("user" as const),
-      content: `${message.speakerName ? `【${message.speakerName}】` : ""}${message.content}`,
+      content: `${formatSpeakerPrefix(message)}${message.content}`,
     })),
   ];
 }

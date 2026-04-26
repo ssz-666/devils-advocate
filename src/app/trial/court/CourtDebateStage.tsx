@@ -23,11 +23,8 @@ type CourtStep =
 
 function sanitizeCourtContent(content: string) {
   return content
-    .replace(/^\s*[\[【(（][^[\]】)）]{1,40}[\]】)）]\s*/u, "")
-    .replace(
-      /^\s*(法官|控方律师|辩方律师)\s+(The Judge|Prosecution|Defense)\s*/u,
-      "",
-    )
+    .replace(/^\s*[\[【(（][^\]】)）\n]{1,40}[\]】)）]\s*/u, "")
+    .replace(/^\s*(法官|控方律师|辩方律师)\s+(The Judge|Prosecution|Defense)\s*/u, "")
     .trimStart();
 }
 

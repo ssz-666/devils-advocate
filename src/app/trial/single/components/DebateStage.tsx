@@ -11,6 +11,11 @@ import { cn } from "@/lib/utils";
 
 const TEN_MINUTES = 10 * 60;
 
+type WindowWithAudioContext = Window &
+  typeof globalThis & {
+    webkitAudioContext?: typeof AudioContext;
+  };
+
 function formatTime(seconds: number) {
   const minutes = Math.floor(seconds / 60);
   const rest = seconds % 60;
@@ -59,18 +64,13 @@ function playInkSound(enabled: boolean) {
   oscillator.stop(context.currentTime + 0.12);
 }
 
-type WindowWithAudioContext = Window &
-  typeof globalThis & {
-    webkitAudioContext?: typeof AudioContext;
-  };
-
 function MessageItem({ message }: { message: DebateMessage }) {
   if (message.role === "user") {
     return (
       <motion.div
+        animate={{ opacity: 1, filter: "blur(0px)", y: 0 }}
         className="flex justify-end"
         initial={{ opacity: 0, filter: "blur(10px)", y: 12 }}
-        animate={{ opacity: 1, filter: "blur(0px)", y: 0 }}
       >
         <div className="max-w-[82%] bg-[#1E1E24] px-5 py-4 font-serif-cn text-base leading-8 text-devil-ivory/90 sm:max-w-[64%]">
           {message.content}
@@ -81,9 +81,9 @@ function MessageItem({ message }: { message: DebateMessage }) {
 
   return (
     <motion.div
+      animate={{ opacity: 1, filter: "blur(0px)", y: 0 }}
       className="space-y-4"
       initial={{ opacity: 0, filter: "blur(12px)", y: 12 }}
-      animate={{ opacity: 1, filter: "blur(0px)", y: 0 }}
     >
       <AgentAvatar />
       <div className="border-l border-devil-red pl-5 font-body-cn text-[17px] leading-9 text-devil-ivory">
@@ -280,8 +280,8 @@ export function DebateStage() {
       </div>
 
       <div
-        ref={scrollRef}
         className="mx-auto mt-10 flex max-h-[calc(100vh-17rem)] max-w-5xl flex-col gap-9 overflow-y-auto pr-2"
+        ref={scrollRef}
       >
         {messages.map((message) => (
           <MessageItem key={message.id} message={message} />
@@ -299,7 +299,6 @@ export function DebateStage() {
             <textarea
               ref={textareaRef}
               className="max-h-40 min-h-14 w-full resize-none bg-transparent px-4 py-4 font-serif-cn text-base leading-7 text-devil-ivory outline-none placeholder:text-devil-muted/60"
-              value={input}
               onChange={(event) => handleInputChange(event.target.value)}
               onKeyDown={(event) => {
                 if (event.key === "Enter" && !event.shiftKey) {
@@ -307,7 +306,10 @@ export function DebateStage() {
                   void submitUserMessage();
                 }
               }}
-              placeholder={isStreaming ? "输入即可打断反方发言。" : "反驳它。Enter 发送，Shift+Enter 换行。"}
+              placeholder={
+                isStreaming ? "输入即可打断反方发言。" : "反驳它。Enter 发送，Shift+Enter 换行。"
+              }
+              value={input}
             />
           </div>
           <div className="flex gap-3">

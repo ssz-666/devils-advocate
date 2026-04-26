@@ -21,6 +21,14 @@ type JuryVerdict = {
 
 const TOTAL_TURNS = FURY_PERSONAS.length * 2;
 
+const PERSONA_FALLBACK_LINES: Record<string, string> = {
+  "the-father": "你这份决心还没把代价算明白。热情先到了，责任还没跟上。",
+  "future-self": "十年后回看，真正让人后悔的，往往不是迟疑，而是没算清后果就出手。",
+  "the-ex": "你还是老样子，先替情绪写结论，再逼现实签字。",
+  "the-fan": "我当然想相信你能赢，可光靠相信，不会自动长出底牌。",
+  "the-nemesis": "这一步要是真走错了，最好笑的不是失败，是你事先明明看见了裂缝。",
+};
+
 function parseJuryVerdict(raw: string): JuryVerdict | null {
   const matched = raw.match(/\{[\s\S]*\}/);
   if (!matched) {
@@ -36,12 +44,12 @@ function parseJuryVerdict(raw: string): JuryVerdict | null {
 
 function sanitizeFuryContent(content: string) {
   return content
-    .replace(/^\s*[\[【][^\]】]{1,40}[\]】]\s*/u, "")
+    .replace(/^\s*[\[{(【（][^\]})】）\n]{0,40}[\]})】）]\s*/u, "")
     .replace(
-      /^\s*(严父|十年后的你|前任|粉丝|死敌)\s+(The Father|Future Self|The Ex|The Fan|The Nemesis)\s*/u,
+      /^\s*(严父|十年后的你|前任|粉丝|死敌)\s*(The Father|Future Self|The Ex|The Fan|The Nemesis)?[:：\s-]*/u,
       "",
     )
-    .trimStart();
+    .trim();
 }
 
 function FuryAvatar({
@@ -137,6 +145,7 @@ export function FuriesDebateStage({ onFinish }: { onFinish: () => void }) {
   async function generatePersonaTurn(nextTurnIndex: number) {
     const persona = FURY_PERSONAS[nextTurnIndex % FURY_PERSONAS.length];
     setIsStreaming(true);
+
     const messageId = addMessage({
       role: "agent",
       content: "",
@@ -144,6 +153,7 @@ export function FuriesDebateStage({ onFinish }: { onFinish: () => void }) {
       speakerName: `${persona.name} ${persona.enName}`,
       accentColor: persona.accent,
     });
+
     let partial = "";
 
     try {
@@ -166,10 +176,8 @@ export function FuriesDebateStage({ onFinish }: { onFinish: () => void }) {
         timeoutMs: 12000,
       });
     } catch {
-      updateMessage(
-        messageId,
-        sanitizeFuryContent(partial) || "这一刀暂时没落下来，但敌意还在场。",
-      );
+      const fallback = PERSONA_FALLBACK_LINES[persona.id] ?? "这一轮话没有落下来，但怀疑还在场。";
+      updateMessage(messageId, sanitizeFuryContent(partial) || fallback);
     } finally {
       setIsStreaming(false);
     }
@@ -223,6 +231,7 @@ export function FuriesDebateStage({ onFinish }: { onFinish: () => void }) {
           temperature: 0.45,
           timeoutMs: 12000,
         });
+
         const parsed = parseJuryVerdict(response.content);
         if (!parsed) {
           return;
@@ -250,7 +259,7 @@ export function FuriesDebateStage({ onFinish }: { onFinish: () => void }) {
           },
         });
       } catch {
-        // Keep the local verdict if refinement fails.
+        // Keep local verdict if refinement fails.
       }
     })();
   }
@@ -260,8 +269,13 @@ export function FuriesDebateStage({ onFinish }: { onFinish: () => void }) {
       return;
     }
 
-    addMessage({ role: "user", content: input.trim(), speakerName: "用户" });
+    addMessage({
+      role: "user",
+      content: input.trim(),
+      speakerName: "用户",
+    });
     setInput("");
+
     const nextTurn = turnIndex + 1;
     setTurnIndex(nextTurn);
 
@@ -348,7 +362,7 @@ export function FuriesDebateStage({ onFinish }: { onFinish: () => void }) {
                   }}
                   transition={{ duration: 0.5 }}
                 >
-                  {message.content || "…"}
+                  {message.content || "……"}
                 </motion.div>
               </motion.div>
             );
