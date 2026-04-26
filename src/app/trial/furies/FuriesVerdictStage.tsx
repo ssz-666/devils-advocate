@@ -306,22 +306,24 @@ export function FuriesVerdictStage({ onRestart }: { onRestart: () => void }) {
     }
 
     const shareUrl = getPublicAppUrl();
-    const text = `${FURIES_TEMPLATE.reportTitleZh} ? ${convergence || "??????"}`;
+    const text = `${FURIES_TEMPLATE.reportTitleZh} · ${convergence || "五种声音已经到齐。"}`;
+    const shareText = `${text}\n${shareUrl}`;
+    const shareTitle = "反方辩友合议报告";
 
     try {
       const file = await generatePngFile(
         portraitRef.current,
         "portrait",
-        `furies-share-${Date.now()} .png`.replace(' .png', '.png'),
+        `furies-share-${Date.now()}.png`,
       );
       if (navigator.canShare?.({ files: [file] })) {
         await navigator.share({
-          title: "???????",
-          text: `${text}
-${shareUrl}`,
+          title: shareTitle,
+          text: shareText,
           url: shareUrl,
           files: [file],
         });
+        setToast({ visible: true, message: "截图与链接已调起分享" });
         return;
       }
     } catch {
@@ -331,20 +333,28 @@ ${shareUrl}`,
     if (navigator.share) {
       try {
         await navigator.share({
-          title: "???????",
-          text: `${text}
-${shareUrl}`,
+          title: shareTitle,
+          text: shareText,
           url: shareUrl,
         });
+        setToast({ visible: true, message: "链接已调起分享" });
         return;
       } catch {
         // fall through
       }
     }
 
-    await navigator.clipboard.writeText(`${text}
-${shareUrl}`);
-    setToast({ visible: true, message: "?????????" });
+    try {
+      await navigator.clipboard.writeText(shareText);
+      setToast({ visible: true, message: "链接已复制，请手动发送截图" });
+    } catch {
+      await downloadElementAsPng(
+        portraitRef.current,
+        "portrait",
+        `furies-share-${Date.now()}.png`,
+      );
+      setToast({ visible: true, message: "当前浏览器不支持系统分享，已下载截图" });
+    }
   }
 
   return (

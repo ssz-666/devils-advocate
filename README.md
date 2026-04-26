@@ -165,6 +165,7 @@ Vercel is still useful for preview deployments and overseas demos:
 
 ### Suggested domains
 
+- `fanfangbianyou.cn`
 - `devilsadvocate.app`
 - `devils-advocate.app`
 - `fanfangbianyou.com`

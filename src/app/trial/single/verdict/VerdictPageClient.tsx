@@ -567,22 +567,24 @@ export function VerdictPageClient() {
     }
 
     const shareUrl = getPublicAppUrl();
-    const summary = `${renderSession.verdict.oneLiner || renderSession.verdict.sentenceZh} ? ??? ${renderSession.verdict.convictionScore}`;
+    const summary = `${renderSession.verdict.oneLiner || renderSession.verdict.sentenceZh} · 成立度 ${renderSession.verdict.convictionScore}`;
+    const shareText = `${summary}\n${shareUrl}`;
+    const shareTitle = "反方辩友判决书";
 
     try {
       const file = await generatePngFile(
         portraitRef.current,
         "portrait",
-        `verdict-share-${Date.now()} .png`.replace(' .png', '.png'),
+        `verdict-share-${Date.now()}.png`,
       );
       if (navigator.canShare?.({ files: [file] })) {
         await navigator.share({
-          title: "???????",
-          text: `${summary}
-${shareUrl}`,
+          title: shareTitle,
+          text: shareText,
           url: shareUrl,
           files: [file],
         });
+        setToast({ visible: true, message: "截图与链接已调起分享" });
         return;
       }
     } catch {
@@ -592,20 +594,28 @@ ${shareUrl}`,
     if (navigator.share) {
       try {
         await navigator.share({
-          title: "???????",
-          text: `${summary}
-${shareUrl}`,
+          title: shareTitle,
+          text: shareText,
           url: shareUrl,
         });
+        setToast({ visible: true, message: "链接已调起分享" });
         return;
       } catch {
         // fall through
       }
     }
 
-    await navigator.clipboard.writeText(`${summary}
-${shareUrl}`);
-    setToast({ visible: true, message: "?????????" });
+    try {
+      await navigator.clipboard.writeText(shareText);
+      setToast({ visible: true, message: "链接已复制，请手动发送截图" });
+    } catch {
+      await downloadElementAsPng(
+        portraitRef.current,
+        "portrait",
+        `verdict-share-${Date.now()}.png`,
+      );
+      setToast({ visible: true, message: "当前浏览器不支持系统分享，已下载截图" });
+    }
   }
 
   return (

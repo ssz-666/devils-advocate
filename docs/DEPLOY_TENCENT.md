@@ -1,6 +1,6 @@
 # 腾讯云部署指南
 
-这份项目是一个 `Next.js 14` 应用，包含：
+这个项目是一个 `Next.js 14` 应用，包含：
 
 - 静态页面
 - 动态页面
@@ -72,7 +72,7 @@ cp .env.example .env.production
 建议至少填写：
 
 ```env
-NEXT_PUBLIC_APP_URL=https://你的正式域名/
+NEXT_PUBLIC_APP_URL=https://fanfangbianyou.cn/
 NEXT_PUBLIC_BRAND_NAME=Devil's Advocate
 NEXT_PUBLIC_DEFAULT_PROVIDER=deepseek
 NEXT_PUBLIC_ENABLE_HOSTED_DEEPSEEK=true
@@ -85,7 +85,7 @@ PORT=3000
 
 - `DEEPSEEK_API_KEY` 必须放服务端，不要放前端源码
 - `NEXT_PUBLIC_APP_URL` 要写最终对外访问地址
-- 如果先没有域名，也可以临时写服务器 IP，但正式分享建议还是用域名
+- 你现在的正式分享域名就是 `https://fanfangbianyou.cn/`
 
 ---
 
@@ -138,13 +138,13 @@ sudo nginx -t
 sudo systemctl reload nginx
 ```
 
-如果你只是先用 IP 测试，把配置里的：
+当前示例配置已经按你的域名写好：
 
 ```nginx
-server_name devilsadvocate.app www.devilsadvocate.app;
+server_name fanfangbianyou.cn www.fanfangbianyou.cn;
 ```
 
-先改成你的域名，或者临时改成：
+如果你只是先用 IP 测试，也可以临时改成：
 
 ```nginx
 server_name _;
@@ -158,7 +158,7 @@ server_name _;
 
 ```bash
 sudo apt install -y certbot python3-certbot-nginx
-sudo certbot --nginx -d 你的域名 -d www.你的域名
+sudo certbot --nginx -d fanfangbianyou.cn -d www.fanfangbianyou.cn
 ```
 
 ---
@@ -201,7 +201,7 @@ pm2 restart devils-advocate
 如果你的用户主要在中国大陆：
 
 - 自定义域名比裸 IP 更适合长期使用
-- 正式公开运营建议考虑ICP备案
+- 正式公开运营建议考虑 ICP 备案
 - 你现在用了服务端代理 DeepSeek，务必关注调用量与限流
 
 建议下一步尽快补：
@@ -227,4 +227,3 @@ pm2 restart devils-advocate
 8. 绑定域名与 HTTPS
 
 这样就能得到一个比 Vercel 更适合中国大陆访问的正式版本。
-

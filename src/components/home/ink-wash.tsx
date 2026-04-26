@@ -2,7 +2,7 @@ export function InkWash() {
   return (
     <svg
       aria-hidden="true"
-      className="animate-ink-spread absolute right-[-18%] top-16 h-[88vh] w-[58vw] min-w-[520px] text-devil-red/35 opacity-20 blur-[0.2px]"
+      className="pointer-events-none animate-ink-spread absolute right-[-18%] top-16 h-[88vh] w-[58vw] min-w-[520px] text-devil-red/35 opacity-20 blur-[0.2px]"
       fill="none"
       viewBox="0 0 620 920"
     >

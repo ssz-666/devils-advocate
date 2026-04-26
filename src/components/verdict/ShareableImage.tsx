@@ -2,7 +2,7 @@
 
 import { ShareQrCard } from "@/components/verdict/ShareQrCard";
 import type { ShareImageVariant } from "@/lib/image/generateImage";
-import { getPublicAppUrl } from "@/lib/share/appUrl";
+import { getPublicAppHost, getPublicAppUrl } from "@/lib/share/appUrl";
 import { summarizeDecisionQuestion } from "@/lib/verdict/questionSummary";
 import { VERDICT_TEMPLATES } from "@/lib/verdict/templates";
 import type { DebateSession } from "@/lib/store/debate";
@@ -52,11 +52,10 @@ export function ShareableImage({ session, variant }: ShareableImageProps) {
         : "#E8E6E3";
 
   const oneLiner =
-    verdict.oneLiner ||
-    verdict.sentenceZh ||
-    "真正的决定，经得住最锋利的反对。";
+    verdict.oneLiner || verdict.sentenceZh || "真正的决定，经得住最锋利的反对。";
   const questionSummary = summarizeDecisionQuestion(session.statement);
   const publicAppUrl = getPublicAppUrl();
+  const publicAppHost = getPublicAppHost();
 
   return (
     <div
@@ -188,7 +187,7 @@ export function ShareableImage({ session, variant }: ShareableImageProps) {
           <div>
             <div className="mb-5 h-px w-72 bg-gradient-to-r from-devil-gold to-transparent" />
             <p className="font-serif-cn text-[28px] text-devil-ivory">
-              反方辩友 · devils-advocate.app
+              反方辩友 · {publicAppHost}
             </p>
             <p className="mt-3 font-body-cn text-[20px] text-devil-muted">
               Your worst critic, for your best decisions

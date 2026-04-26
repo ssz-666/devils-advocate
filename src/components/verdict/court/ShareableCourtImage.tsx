@@ -2,7 +2,7 @@
 
 import { ShareQrCard } from "@/components/verdict/ShareQrCard";
 import type { ShareImageVariant } from "@/lib/image/generateImage";
-import { getPublicAppUrl } from "@/lib/share/appUrl";
+import { getPublicAppHost, getPublicAppUrl } from "@/lib/share/appUrl";
 import type { CourtSentence } from "@/lib/verdict/courtVerdictTemplates";
 import { summarizeDecisionQuestion } from "@/lib/verdict/questionSummary";
 
@@ -57,6 +57,7 @@ export function ShareableCourtImage({
 }) {
   const questionSummary = summarizeDecisionQuestion(statement);
   const publicAppUrl = getPublicAppUrl();
+  const publicAppHost = getPublicAppHost();
   const rows = [
     { label: "PROSECUTION", zh: "控方强度", value: breakdown.prosecutionStrength, color: "#8B0000" },
     { label: "DEFENSE", zh: "辩方强度", value: breakdown.defenseStrength, color: "#B8860B" },
@@ -199,7 +200,7 @@ export function ShareableCourtImage({
           <div>
             <div className="mb-5 h-px w-72 bg-gradient-to-r from-devil-gold to-transparent" />
             <p className="font-serif-cn text-[28px] text-devil-ivory">
-              反方辩友 · devils-advocate.app
+              反方辩友 · {publicAppHost}
             </p>
             <p className="mt-3 font-body-cn text-[20px] text-devil-muted">
               The ruling is archived. The road remains yours.

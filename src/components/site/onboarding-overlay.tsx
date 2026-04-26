@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, AnimatePresence } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useSettingsStore } from "@/lib/store/settings";
@@ -13,8 +13,8 @@ const steps = [
   },
   {
     eyebrow: "STEP 2",
-    title: "先接入你的模型。",
-    body: "第一次使用前，需要配置 API Key。判决阶段会自动切到快模型，保证体验不被拖垮。",
+    title: "不设置也能直接开始。",
+    body: "平台已经提供默认模型可直接使用。你不填 API Key 也能进入审判；如果你有自己的模型或密钥，再去设置里切换即可。",
   },
   {
     eyebrow: "STEP 3",

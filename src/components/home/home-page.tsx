@@ -13,7 +13,7 @@ const trialModes = [
   {
     cnTitle: "单刀",
     subtitle: "Single Blade",
-    description: "一对一理性反驳。没有掌声，没有安慰，只有你决定里最薄弱的那一刀。",
+    description: "一对一理性反驳。没有掌声，没有安慰，只有你决定里最脆弱的那一刀。",
     href: "/trial/single",
     icon: <DaggerIcon />,
   },
@@ -39,11 +39,11 @@ const quotes = [
     source: "苏格拉底",
   },
   {
-    text: "怀疑并不令人愉快，但确信是荒谬的。",
+    text: "怀疑并不令人愉快，但确信往往更荒谬。",
     source: "伏尔泰",
   },
   {
-    text: "受过训练的头脑，能够容纳一种想法，而不急于接受它。",
+    text: "受过训练的头脑，能容纳一种想法，而不急于接受它。",
     source: "亚里士多德",
   },
 ];
@@ -52,7 +52,7 @@ export function HomePage() {
   return (
     <>
       <section className="relative flex min-h-screen items-center justify-center overflow-hidden px-5 pt-16 sm:px-8">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_18%,rgba(139,0,0,0.28),transparent_34%),radial-gradient(circle_at_78%_76%,rgba(184,134,11,0.08),transparent_28%)]" />
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_18%_18%,rgba(139,0,0,0.28),transparent_34%),radial-gradient(circle_at_78%_76%,rgba(184,134,11,0.08),transparent_28%)]" />
         <InkWash />
         <KineticScale />
         <motion.div
@@ -71,11 +71,11 @@ export function HomePage() {
             ]}
           />
           <p className="mx-auto mt-8 max-w-3xl font-serif-cn text-[1.35rem] leading-relaxed text-devil-ivory/85 sm:text-2xl">
-            让最锋利的反对声，替你做决定前的最后一道审视
+            让最锋利的反对声，替你做决定前的最后一道审视。
           </p>
           <p className="mx-auto mt-7 max-w-[500px] whitespace-pre-line font-body-cn text-base leading-8 text-devil-muted">
             {`你说的每句话，我都会反驳。
-不是因为你错了，是因为你值得被真正理解。
+不是因为你错了，而是因为你值得被真正理解。
 你必须说服我——否则，你就还没真的想清楚。`}
           </p>
           <div className="mt-10">
@@ -133,7 +133,7 @@ export function HomePage() {
         className="relative overflow-hidden border-t border-devil-line px-5 py-28 text-center sm:px-8"
         id="trial"
       >
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(139,0,0,0.26),transparent_42%)]" />
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(139,0,0,0.26),transparent_42%)]" />
         <div className="relative mx-auto max-w-4xl">
           <p className="font-mono text-[0.68rem] uppercase tracking-[0.32em] text-devil-muted">
             FINAL SUMMONS
@@ -145,7 +145,7 @@ export function HomePage() {
             把那个正在折磨你的决定交出来。十分钟后，你会得到一个更冷静、更完整、也更难逃避的判决。
           </p>
           <div className="mt-10">
-            <CourtroomButton>开始反驳</CourtroomButton>
+            <CourtroomButton href="/trial/single">开始反驳</CourtroomButton>
           </div>
         </div>
       </section>

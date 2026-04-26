@@ -6,7 +6,7 @@ export function KineticScale() {
   return (
     <motion.svg
       aria-hidden="true"
-      className="absolute bottom-8 right-6 hidden h-28 w-28 text-devil-gold/25 sm:block lg:bottom-12 lg:right-14 lg:h-40 lg:w-40"
+      className="pointer-events-none absolute bottom-8 right-6 hidden h-28 w-28 text-devil-gold/25 sm:block lg:bottom-12 lg:right-14 lg:h-40 lg:w-40"
       fill="none"
       stroke="currentColor"
       strokeLinecap="round"
